@@ -156,14 +156,4 @@ class RolesApiController extends Controller
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
         }
     }
-
-    public function fetchRegRoles(Request $request)
-    {
-        try {
-            $roles = Role::whereIn('rolename', ['StoreAdmin', 'MallAdmin'])->get(['id', 'rolename', 'role_display_name']);
-            return response()->json(['status' => 'S', 'message' => trans('returnmessage.dataretreived'), 'roles' => $roles]);
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
-        }
-    }
 }

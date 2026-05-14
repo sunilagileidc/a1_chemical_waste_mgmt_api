@@ -255,12 +255,10 @@ class CountriesApiController extends Controller
      *
      * @updated-on: 05-02-2026
      */
-    public function fetchStatesName(Request $request)
+    public function fetchStatesName($id)
     {
         try {
-            $country_id = Countries::where('name', $request->name)->first();
-            $cid = $country_id->id;
-            $name = States::where('country_id', $cid)->get();
+            $name = States::where('country_id', $id)->get();
             return response()->json(['status' => 'S', 'message' => trans('returnmessage.dataretreived'), 'states' => $name]);
         } catch (\Exception $e) {
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
@@ -276,13 +274,10 @@ class CountriesApiController extends Controller
      *
      * @updated-on: 05-02-2026
      */
-    public function fetchCitiesName(Request $request)
+    public function fetchCitiesName($id)
     {
         try {
-
-            $state_id = States::where('name', $request->name)->first();
-            $sid = $state_id->id;
-            $name = Cities::where('state_id', $sid)->get();
+            $name = Cities::where('state_id', $id)->get();
             return response()->json(['status' => 'S', 'message' => trans('returnmessage.dataretreived'), 'cities' => $name]);
         } catch (\Exception $e) {
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);

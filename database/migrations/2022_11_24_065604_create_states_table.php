@@ -14,7 +14,7 @@ class CreateStatesTable extends Migration
     public function up()
     {
         Schema::create('states', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->comment('primary key');
             $table->string('name', 100)->comment('Name of the state');
             $table->unsignedBigInteger('country_id')->comment('Id of the parent country');
             $table->integer('status')->default(1)->comment('Status if the record is active');

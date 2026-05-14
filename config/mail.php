@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default'  => env('MAIL_MAILER', 'smtp'),
 
     /*
     |--------------------------------------------------------------------------
@@ -35,55 +35,55 @@ return [
     |
     */
 
-    'mailers' => [
+    'mailers'  => [
 
-        'smtp' => [
-            'transport' => 'smtp',
-            'scheme' => env('MAIL_SCHEME'),
-            'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
-            'port' => env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
-            'auth_mode' => null,
+        'smtp'       => [
+            'transport'    => 'smtp',
+            'scheme'       => env('MAIL_SCHEME'),
+            'url'          => env('MAIL_URL'),
+            'host'         => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port'         => env('MAIL_PORT', 587),
+            'encryption'   => env('MAIL_ENCRYPTION', 'tls'),
+            'username'     => env('MAIL_USERNAME'),
+            'password'     => env('MAIL_PASSWORD'),
+            'timeout'      => null,
+            'auth_mode'    => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
-        'ses' => [
+        'ses'        => [
             'transport' => 'ses',
         ],
 
-        'mailgun' => [
+        'mailgun'    => [
             'transport' => 'mailgun',
         ],
 
-        'postmark' => [
+        'postmark'   => [
             'transport' => 'postmark',
         ],
 
-        'resend' => [
+        'resend'     => [
             'transport' => 'resend',
         ],
 
-        'sendmail' => [
+        'sendmail'   => [
             'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+            'path'      => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
         ],
 
-        'log' => [
+        'log'        => [
             'transport' => 'log',
-            'channel' => env('MAIL_LOG_CHANNEL'),
+            'channel'   => env('MAIL_LOG_CHANNEL'),
         ],
 
-        'array' => [
+        'array'      => [
             'transport' => 'array',
         ],
 
-        'failover' => [
-            'transport' => 'failover',
-            'mailers' => [
+        'failover'   => [
+            'transport'   => 'failover',
+            'mailers'     => [
                 'smtp',
                 'log',
             ],
@@ -91,8 +91,8 @@ return [
         ],
 
         'roundrobin' => [
-            'transport' => 'roundrobin',
-            'mailers' => [
+            'transport'   => 'roundrobin',
+            'mailers'     => [
                 'ses',
                 'postmark',
             ],
@@ -112,9 +112,9 @@ return [
     |
     */
 
-    'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'agileidc@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'AgileIDC'),
+    'from'     => [
+        'address' => env('MAIL_FROM_ADDRESS', 'pharmacaregroup@example.com'),
+        'name'    => env('MAIL_FROM_NAME', 'Pharmacare Group'),
     ],
 
     'markdown' => [

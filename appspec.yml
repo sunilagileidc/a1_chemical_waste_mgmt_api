@@ -1,0 +1,19 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /var/www/html/projects/pharmacare
+    overwrite: true
+
+permissions:
+  - object: /var/www/html/projects/pharmacare
+    owner: ubuntu
+    group: www-data
+    mode: 755
+
+hooks:
+  AfterInstall:
+    - location: scripts/deploy.sh
+      timeout: 300
+      runas: ubuntu

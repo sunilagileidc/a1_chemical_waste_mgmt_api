@@ -18,7 +18,6 @@ class Role extends Model
     //protected $appends = ['parent_name'];
 
     protected $fillable = [
-        'id',
         'rolename',
         'role_display_name',
         'roledescription',

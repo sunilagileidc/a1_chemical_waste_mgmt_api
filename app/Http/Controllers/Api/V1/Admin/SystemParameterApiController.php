@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
@@ -60,10 +59,10 @@ class SystemParameterApiController extends Controller
     public function fetchImageUrl()
     {
         try {
-            $app_name = '';
-            $systemparameters = SystemParameters::where('parameter_name', 'APP_LOGO')->where('status', 1)->first();
+            $app_name          = '';
+            $systemparameters  = SystemParameters::where('parameter_name', 'APP_LOGO')->where('status', 1)->first();
             $login_otp_enabled = SystemParameters::where('parameter_name', 'LOGIN_OTP_ENABLED')->first();
-            $app_name = config('values.APP_NAME');
+            $app_name          = config('values.APP_NAME');
             return response()->json(['status' => 'S', 'message' => trans('returnmessage.dataretreived'), 'parameter_image' => $systemparameters, 'application_name' => $app_name, 'login_otp_enabled' => $login_otp_enabled]);
         } catch (\Exception $e) {
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
@@ -125,11 +124,11 @@ class SystemParameterApiController extends Controller
     public function store(Request $request)
     {
         $currenttime = date('Y-m-d h:i:s');
-        $id = $request->id;
-        $validator = Validator::make($request->all(), [
-            'parameter_name' => 'required',
+        $id          = $request->id;
+        $validator   = Validator::make($request->all(), [
+            'parameter_name'  => 'required',
             'parameter_value' => 'required',
-            'description' => 'required',
+            'description'     => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -147,21 +146,21 @@ class SystemParameterApiController extends Controller
             if ($id > 0) {
                 $systemparameter = SystemParameters::where('id', $id)
                     ->update([
-                        'parameter_name' => $request->parameter_name,
+                        'parameter_name'  => $request->parameter_name,
                         'parameter_value' => $request->parameter_value,
-                        'description' => $request->description,
-                        'is_file_upload' => $request->is_file_upload,
-                        'updated_at' => $currenttime,
+                        'description'     => $request->description,
+                        'is_file_upload'  => $request->is_file_upload,
+                        'updated_at'      => $currenttime,
                     ]);
                 $systemparameter = SystemParameters::where('id', $request->id)->first();
                 return response()->json(['status' => 'S', 'message' => trans('returnmessage.updatedsuccessfully'), 'systemparameter' => $systemparameter]);
             } else {
                 $systemparameter = SystemParameters::create([
-                    'parameter_name' => $request->parameter_name,
+                    'parameter_name'  => $request->parameter_name,
                     'parameter_value' => $request->parameter_value,
-                    'description' => $request->description,
-                    'is_file_upload' => $request->is_file_upload,
-                    'created_at' => $currenttime,
+                    'description'     => $request->description,
+                    'is_file_upload'  => $request->is_file_upload,
+                    'created_at'      => $currenttime,
                 ]);
                 return response()->json(['status' => 'S', 'message' => trans('returnmessage.createdsuccessfully'), 'systemparameter' => $systemparameter]);
             }
@@ -189,12 +188,28 @@ class SystemParameterApiController extends Controller
         }
     }
 
+    /**
+     * @function: to fetch System Parameters details.
+     *
+     * @author: Santhosha G
+     *
+     * @created-on: 25 Feb, 2026
+     *
+     * @updated-on: N/A
+     */
     public function getSystemParameter(Request $request)
     {
         try {
-            $parameter = SystemParameters::where('parameter_name', $request->parameter_name)->value('parameter_value');
+            $parameterNames = $request->parameter_name;
 
-            return response()->json(['status' => 'S', 'message' => trans('returnmessage.dataretreived'), 'parameter' => $parameter]);
+            // If single string, convert to array
+            if (! is_array($parameterNames)) {
+                $parameterNames = [$parameterNames];
+            }
+
+            $parameters = SystemParameters::whereIn('parameter_name', $parameterNames)->pluck('parameter_value', 'parameter_name');
+
+            return response()->json(['status' => 'S', 'message' => trans('returnmessage.dataretreived'), 'parameter' => $parameters]);
         } catch (\Exception $e) {
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
         }

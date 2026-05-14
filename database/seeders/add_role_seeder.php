@@ -22,16 +22,16 @@ class add_role_seeder extends Seeder
                 'slug' => 'superuser',
             ],
             [
-                'rolename' => 'MallAdmin',
-                'role_display_name' => 'Mall Admin',
-                'roledescription' => 'Mall Admin',
-                'slug' => 'mall-admin',
+                'rolename' => 'Prescriber',
+                'role_display_name' => 'Prescriber',
+                'roledescription' => 'Prescriber',
+                'slug' => 'prescriber',
             ],
             [
-                'rolename' => 'StoreAdmin',
-                'role_display_name' => 'Store Admin',
-                'roledescription' => 'Store Admin',
-                'slug' => 'store-admin',
+                'rolename' => 'Pharmacist',
+                'role_display_name' => 'Pharmacist',
+                'roledescription' => 'Pharmacist',
+                'slug' => 'pharmacist',
             ]
         ]);
     }

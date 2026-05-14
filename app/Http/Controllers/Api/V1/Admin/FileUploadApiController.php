@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\FileUpload;
 use File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\App;
 use Image;
 use Log;
 
@@ -34,7 +34,7 @@ class FileUploadApiController extends Controller
     public function imageUpload(Request $request)
     {
         try {
-            Log::info($request);
+            // Log::info($request);
             if (request('image')) {
                 $base64_str = substr($request->image, strpos($request->image, ",") + 1);
 

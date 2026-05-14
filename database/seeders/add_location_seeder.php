@@ -28,6 +28,46 @@ class add_location_seeder extends Seeder
                 'status' => 1,
                 'slug' => 'india',
             ],
+            [
+                'name' => 'United Kingdom',
+                'mobile_code' => '+44',
+                'country_code' => 'GB',
+                'is_whitelisted' => 1,
+                'status' => 1,
+                'slug' => 'united-kingdom',
+            ],
+            [
+                'name' => 'Isle of Man',
+                'mobile_code' => '+44',
+                'country_code' => 'IM',
+                'is_whitelisted' => 1,
+                'status' => 1,
+                'slug' => 'isle-of-man',
+            ],
+            [
+                'name' => 'Jersey',
+                'mobile_code' => '+44',
+                'country_code' => 'JE',
+                'is_whitelisted' => 1,
+                'status' => 1,
+                'slug' => 'jersey',
+            ],
+            [
+                'name' => 'Guernsey',
+                'mobile_code' => '+44',
+                'country_code' => 'GG',
+                'is_whitelisted' => 1,
+                'status' => 1,
+                'slug' => 'guernsey',
+            ],
+            [
+                'name' => 'Gibraltar',
+                'mobile_code' => '+350',
+                'country_code' => 'GI',
+                'is_whitelisted' => 1,
+                'status' => 1,
+                'slug' => 'gibraltar',
+            ],
         ]);
 
         // ✅ correct way

@@ -29,6 +29,7 @@ class add_superuser_seeder extends Seeder
             [
                 'salutation' => 'Mr',
                 'name' => 'Super',
+                'lastname' => 'User',
                 'gender' => 'Male',
                 'email' => 'superuser@agileidc.com',
                 'password' => $password,

@@ -1,13 +1,13 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\CustomClass\CustomFunctions;
 use App\Http\Controllers\Controller;
-use App\Mail\UserRegistrationMail;
+use App\Mail\RegistrationRejectionMail;
 use App\Models\Customer;
 use App\Models\EmailTemplate;
 use App\Models\User;
+use Auth;
 use Hash;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -21,15 +21,13 @@ use Illuminate\Support\Facades\Validator;
 use Log;
 use Mail;
 use Twilio\Rest\Client;
-use Auth;
-use Stevebauman\Location\Facades\Location;
 
 class RecoverPasswordApiController extends Controller
 {
     public function __construct(Request $request)
     {
         $locale = $request->input('lang');
-        if (!in_array($locale, ['ar', 'en'])) {
+        if (! in_array($locale, ['ar', 'en'])) {
             $locale = 'en';
         }
         App::setLocale($locale);
@@ -75,7 +73,7 @@ class RecoverPasswordApiController extends Controller
             }
 
             $userdata = User::where('email', $request->email)->where('status', 1)->first();
-            if (!$userdata) {
+            if (! $userdata) {
                 return response()->json(['status' => 'E', 'message' => trans('returnmessage.credentials_mismatch')]);
             }
             if ($request->role == 'User') {
@@ -83,7 +81,7 @@ class RecoverPasswordApiController extends Controller
                     return response()->json(['status' => 'E', 'message' => trans('returnmessage.credentials_mismatch')]);
                 }
             }
-            if (!$request->role) {
+            if (! $request->role) {
                 if ($userdata->rolename == 'User') {
                     return response()->json(['status' => 'E', 'message' => trans('returnmessage.credentials_mismatch')]);
                 }
@@ -94,8 +92,8 @@ class RecoverPasswordApiController extends Controller
             );
 
             return $response == Password::RESET_LINK_SENT
-            ? $this->sendResetLinkResponse($request, $response)
-            : $this->sendResetLinkFailedResponse($request, $response);
+                ? $this->sendResetLinkResponse($request, $response)
+                : $this->sendResetLinkFailedResponse($request, $response);
         } catch (\Exception $e) {
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
         }
@@ -126,7 +124,7 @@ class RecoverPasswordApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      * @param  string  $response
-     * 
+     *
      * @author: Santhosha G
      *
      * @created-on: 04 Feb, 2026
@@ -138,9 +136,9 @@ class RecoverPasswordApiController extends Controller
     {
         try {
             return response()->json([
-                'status' => 'S',
+                'status'  => 'S',
                 'message' => trans('returnmessage.password_reset_email_sent'),
-                'data' => $response,
+                'data'    => $response,
             ]);
         } catch (\Exception $e) {
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
@@ -153,7 +151,7 @@ class RecoverPasswordApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      * @param  string  $response
-     * 
+     *
      * @author: Santhosha G
      *
      * @created-on: 04 Feb, 2026
@@ -174,7 +172,7 @@ class RecoverPasswordApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      * @param  string  $response
-     * 
+     *
      * @author: Santhosha G
      *
      * @created-on: 04 Feb, 2026
@@ -196,7 +194,7 @@ class RecoverPasswordApiController extends Controller
      * @param  \Illuminate\Contracts\Auth\CanResetPassword  $user
      *
      * @param  string  $password
-     * 
+     *
      * @author: Santhosha G
      *
      * @created-on: 04 Feb, 2026
@@ -220,7 +218,7 @@ class RecoverPasswordApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      * @param  string  $response
-     * 
+     *
      * @author: Santhosha G
      *
      * @created-on: 04 Feb, 2026
@@ -242,7 +240,7 @@ class RecoverPasswordApiController extends Controller
      * @param  \Illuminate\Http\Request  $request
      *
      * @param  string  $response
-     * 
+     *
      * @author: Santhosha G
      *
      * @created-on: 04 Feb, 2026
@@ -262,7 +260,7 @@ class RecoverPasswordApiController extends Controller
      * Reset the given user's password.
      *
      * @param  \Illuminate\Http\Request  $request
-     * 
+     *
      * @author: Santhosha G
      *
      * @created-on: 04 Feb, 2026
@@ -274,8 +272,8 @@ class RecoverPasswordApiController extends Controller
     public function reset(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'token' => ['required', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
+            'token'    => ['required', 'max:255'],
+            'email'    => ['required', 'email', 'max:255'],
             'password' => 'required|confirmed|min:8',
         ]);
         if ($validator->fails()) {
@@ -296,8 +294,8 @@ class RecoverPasswordApiController extends Controller
             // the application's home authenticated view. If there is an error we can
             // redirect them back to where they came from with their error message.
             return $response == Password::PASSWORD_RESET
-            ? $this->sendResetResponse($request, $response)
-            : $this->sendResetFailedResponse($request, $response);
+                ? $this->sendResetResponse($request, $response)
+                : $this->sendResetFailedResponse($request, $response);
         } catch (\Exception $e) {
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
         }
@@ -316,8 +314,8 @@ class RecoverPasswordApiController extends Controller
     {
         try {
             return [
-                'token' => 'required',
-                'email' => 'required|email',
+                'token'    => 'required',
+                'email'    => 'required|email',
                 'password' => 'required|confirmed|min:6',
             ];
         } catch (\Exception $e) {
@@ -358,14 +356,14 @@ class RecoverPasswordApiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'password_confirmation' => 'required',
-            'email' => ['required', 'email', 'max:255'],
-            'otp' => 'required',
+            'email'                 => ['required', 'email', 'max:255'],
+            'otp'                   => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 'E', 'message' => $validator->errors()->all()]);
         }
         try {
-            $otp = \Hash::make((int) $request->otp);
+            $otp  = \Hash::make((int) $request->otp);
             $user = User::where('email', $request->email)
                 ->first();
             $currenttime = date('Y-m-d h:i:s');
@@ -374,12 +372,14 @@ class RecoverPasswordApiController extends Controller
                 if ($currenttime > $user->otp_valid_until) {
                     return response()->json(['status' => 'E', 'message' => trans('returnmessage.invalid_verification_code')]);
                 }
-                if (!Hash::check($request->otp, $user->otp)) {
+                if (! Hash::check($request->otp, $user->otp)) {
                     return response()->json(['status' => 'E', 'message' => trans('returnmessage.invalid_verification_code')]);
                 } else {
-                    $passwordhash = \Hash::make($request->password_confirmation);
+                    $passwordhash   = \Hash::make($request->password_confirmation);
                     $user->password = $passwordhash;
-                    $user->otp = null;
+                    $user->expired  = 0;
+                    $user->status   = 1;
+                    $user->otp      = null;
                     $user->save();
                 }
                 return response()->json(['status' => 'S', 'message' => trans('returnmessage.password_updated_successful')]);
@@ -404,31 +404,40 @@ class RecoverPasswordApiController extends Controller
     public function sendRegistrationOtp(Request $request)
     {
         try {
-            $otp = rand(100000, 999999);
+            $otp         = rand(100000, 999999);
             $currenttime = date('Y-m-d h:i:s');
-            $otptime = strtotime($currenttime . ' + 5 minute');
-            $otptime = date('Y-m-d h:i:s', $otptime);
-            $otphash = \Hash::make($otp);
-            $password = $request->password;
-            $password = Hash::make($password);
-            $emailexist = User::where('email', $request->email)->first();
-
+            $otptime     = strtotime($currenttime . ' + 5 minute');
+            $otptime     = date('Y-m-d h:i:s', $otptime);
+            $otphash     = \Hash::make($otp);
+            $password    = $request->password;
+            $password    = Hash::make($password);
+            $emailexist  = User::where('email', $request->email)->first();
+            Log::info('emailexist');
+            Log::info($emailexist);
             $updateOtp = User::where('email', $emailexist->email)
-                ->update(['otp' => $otphash,
+                ->update(['otp'   => $otphash,
                     'otp_valid_until' => $otptime]);
 
             $emailTemplate = EmailTemplate::where('template_name', 'Resend OTP')->first();
             if (isset($emailTemplate)) {
-                $actionText = null;
-                $actionUrl = null;
-                $userdata = ['firstname' => $request->name, 'email' => $request->email, 'otp' => $otp];
-                $parsedSubject = CustomFunctions::EmailContentParser($emailTemplate->template_subject, $userdata);
-                $parsedContent = CustomFunctions::EmailContentParser($emailTemplate->template_body, $userdata);
-                $paresedSignature = CustomFunctions::EmailContentParser($emailTemplate->template_signature, $userdata);
-                Mail::to($request->email)->send(new UserRegistrationMail($parsedSubject, $parsedContent, $paresedSignature, $actionText, $actionUrl));
+                if (
+                    $emailTemplate->is_mandatory === 1 ||
+                    ($emailTemplate->is_mandatory === 0 && $emailexist->email_subscription == 1)
+                ) {
+                    $actionText       = null;
+                    $actionUrl        = null;
+                    $userdata         = ['firstname' => $request->name, 'email' => $request->email, 'otp' => $otp];
+                    $parsedSubject    = CustomFunctions::EmailContentParser($emailTemplate->template_subject, $userdata);
+                    $parsedContent    = CustomFunctions::EmailContentParser($emailTemplate->template_body, $userdata);
+                    $paresedSignature = CustomFunctions::EmailContentParser($emailTemplate->template_signature, $userdata);
+                    Mail::to($request->email)->queue(new RegistrationRejectionMail($parsedSubject, $parsedContent, $paresedSignature, $actionText, $actionUrl));
+                    return response()->json(['status' => 'S', 'message' => trans('returnmessage.resend_otp')]);
+                } else {
+                    return response()->json(['status' => 'E', 'message' => trans('returnmessage.email_unsubscription')]);
+                }
             }
+            return response()->json(['status' => 'E', 'message' => trans('returnmessage.email_template_unavailable')]);
 
-            return response()->json(['status' => 'S', 'message' => trans('returnmessage.resend_otp')]);
         } catch (\Exception $e) {
             Log::info($e);
             DB::rollback();
@@ -448,35 +457,44 @@ class RecoverPasswordApiController extends Controller
     public function sendPasswordReset(Request $request)
     {
         try {
-            $otp = rand(100000, 999999);
+            $otp         = rand(100000, 999999);
             $currenttime = date('Y-m-d h:i:s');
-            $otptime = strtotime($currenttime . ' + 5 minute');
-            $otptime = date('Y-m-d h:i:s', $otptime);
-            $otphash = \Hash::make($otp);
+            $otptime     = strtotime($currenttime . ' + 5 minute');
+            $otptime     = date('Y-m-d h:i:s', $otptime);
+            $otphash     = \Hash::make($otp);
 
             $updateOtp = User::where('email', $request->email)
-                ->update(['otp' => $otphash,
+                ->update(['otp'   => $otphash,
                     'otp_valid_until' => $otptime]);
 
             $user = User::where('email', $request->email)->first();
-            if (!$user) {
+            if (! $user) {
                 return response()->json(['status' => 'E', 'message' => trans('returnmessage.credentials_mismatch')]);
             }
             $emailTemplate = EmailTemplate::where('template_name', 'Forgot Password')->first();
 
             if (isset($emailTemplate)) {
-                $actionText = null;
-                $actionUrl = null;
-                $userdata = ['firstname' => $user->name . ' ' . $user->lastname, 'otp' => $otp];
-                $parsedSubject = CustomFunctions::EmailContentParser($emailTemplate->template_subject, $userdata);
-                $parsedContent = CustomFunctions::EmailContentParser($emailTemplate->template_body, $userdata);
-                $paresedSignature = CustomFunctions::EmailContentParser($emailTemplate->template_signature, $userdata);
-                Mail::to($request->email)->send(new UserRegistrationMail($parsedSubject, $parsedContent, $paresedSignature, $actionText, $actionUrl));
+                if (
+                    $emailTemplate->is_mandatory === 1 ||
+                    ($emailTemplate->is_mandatory === 0 && $user->email_subscription == 1)
+                ) {
+                    $actionText       = null;
+                    $actionUrl        = null;
+                    $userdata         = ['firstname' => $user->name . ' ' . $user->lastname, 'otp' => $otp];
+                    $parsedSubject    = CustomFunctions::EmailContentParser($emailTemplate->template_subject, $userdata);
+                    $parsedContent    = CustomFunctions::EmailContentParser($emailTemplate->template_body, $userdata);
+                    $paresedSignature = CustomFunctions::EmailContentParser($emailTemplate->template_signature, $userdata);
+                    Mail::to($request->email)->queue(new RegistrationRejectionMail($parsedSubject, $parsedContent, $paresedSignature, $actionText, $actionUrl));
+                    return response()->json(['status' => 'S', 'message' => trans('returnmessage.password_reset_email_sent')]);
+
+                } else {
+                    return response()->json(['status' => 'E', 'message' => trans('returnmessage.email_unsubscription')]);
+                }
+                return response()->json(['status' => 'E', 'message' => trans('returnmessage.email_template_unavailable')]);
             }
-            return response()->json(['status' => 'S', 'message' => trans('returnmessage.password_reset_email_sent')]);
 
         } catch (\Exception $e) {
-            Log::info( $e);
+            Log::info($e);
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
         }
 
@@ -486,27 +504,27 @@ class RecoverPasswordApiController extends Controller
     {
         try {
             DB::beginTransaction();
-            $otp = rand(100000, 999999);
+            $otp         = rand(100000, 999999);
             $currenttime = date('Y-m-d h:i:s');
-            $otptime = strtotime($currenttime . ' + 5 minute');
-            $otptime = date('Y-m-d h:i:s', $otptime);
-            $otphash = \Hash::make($otp);
+            $otptime     = strtotime($currenttime . ' + 5 minute');
+            $otptime     = date('Y-m-d h:i:s', $otptime);
+            $otphash     = \Hash::make($otp);
 
-            $exists = Customer::where('phone', $request->phone)->where('is_otp_validated',1)->first();
+            $exists = Customer::where('phone', $request->phone)->where('is_otp_validated', 1)->first();
 
-            if (!$exists) {
+            if (! $exists) {
                 return response()->json(['status' => 'E', 'message' => trans('returnmessage.credentials_mismatch')]);
             }
             $updateOtp = Customer::where('phone', $request->phone)
-                ->update(['otp' => $otphash,
+                ->update(['otp'   => $otphash,
                     'otp_valid_until' => $otptime]);
 
             $to = 'whatsapp:' . $exists['mobile_code'] . $request->phone;
 
-            $twilio = new Client(config('twilio.account_sid'), config('twilio.auth_token'));
+            $twilio  = new Client(config('twilio.account_sid'), config('twilio.auth_token'));
             $message = $twilio->messages->create($to, [
                 'from' => config('twilio.phone_number'),
-                'body' => trans('returnmessage.otp_verification_fp') .' '. $otp,
+                'body' => trans('returnmessage.otp_verification_fp') . ' ' . $otp,
             ]);
 
             DB::commit();
@@ -522,14 +540,14 @@ class RecoverPasswordApiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'password' => 'required',
-            'phone' => 'required',
-            'otp' => 'required',
+            'phone'    => 'required',
+            'otp'      => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json(['status' => 'E', 'message' => $validator->errors()->all()]);
         }
         try {
-            $otp = \Hash::make((int) $request->otp);
+            $otp  = \Hash::make((int) $request->otp);
             $user = Customer::where('phone', $request->phone)
                 ->first();
             $currenttime = date('Y-m-d h:i:s');
@@ -538,12 +556,12 @@ class RecoverPasswordApiController extends Controller
                 if ($currenttime > $user->otp_valid_until) {
                     return response()->json(['status' => 'E', 'message' => trans('returnmessage.invalid_verification_code')]);
                 }
-                if (!Hash::check($request->otp, $user->otp)) {
+                if (! Hash::check($request->otp, $user->otp)) {
                     return response()->json(['status' => 'E', 'message' => trans('returnmessage.invalid_verification_code')]);
                 } else {
-                    $passwordhash = \Hash::make($request->password);
+                    $passwordhash   = \Hash::make($request->password);
                     $user->password = $passwordhash;
-                    $user->otp = null;
+                    $user->otp      = null;
                     $user->save();
                 }
                 return response()->json(['status' => 'S', 'message' => trans('returnmessage.password_updated_successful')]);
@@ -555,7 +573,7 @@ class RecoverPasswordApiController extends Controller
             return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'error_data' => $e->getmessage()]);
         }
     }
-    
+
     /**
      * @function: to validate Registration Otp.
      *

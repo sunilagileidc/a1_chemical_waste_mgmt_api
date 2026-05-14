@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('email_templates', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->comment('primary key');
             $table->string('template_name', 100)->comment('Name of the email template');
             $table->string('template_subject', 100)->comment('Subject of the email template');
             $table->text('template_body')->comment('Body of the email template');

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\CustomClass\CustomFunctions;
@@ -9,7 +8,6 @@ use App\Models\Role;
 use App\Models\RoleMenu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Log;
 
 class MenuApiController extends Controller
 {
@@ -55,7 +53,6 @@ class MenuApiController extends Controller
             if (Menu::where('title', $request->title)->count() > 0) {
                 return response()->json(['status' => 'E', 'message' => trans('returnmessage.menu') . ' ' . $request->title . ', ' . trans('returnmessage.already_exists')]);
             }
-            $request['is_header'] = 0;
             $menu = Menu::create($request->all());
 
             CustomFunctions::updateSlug($menu->id, $request->title, 'menus');
@@ -203,7 +200,6 @@ class MenuApiController extends Controller
     {
         try {
             $menus = Menu::Where('parent_id', 0)
-                ->where('is_header', 0)
                 ->with('children')
                 ->select('id', 'title as name')
                 ->orderBy('seq', 'asc')
@@ -227,7 +223,7 @@ class MenuApiController extends Controller
     public function parentMenus()
     {
         try {
-            $parentmenus = Menu::where('is_header', 0)->where('parent_id', '<', 1)->orderBy('title')->get();
+            $parentmenus = Menu::where('parent_id', '<', 1)->orderBy('title')->get();
             return response()->json(['status' => 'S', 'mesage' => trans('returnmessage.dataretreived'), 'parentmenu' => $parentmenus]);
 
         } catch (\Exception $e) {
@@ -268,9 +264,9 @@ class MenuApiController extends Controller
     public function storemenuaccess(Request $request)
     {
         try {
-            $data = array();
-            Log::info($request);
-            $parentids = array();
+            $data = [];
+            // Log::info($request);
+            $parentids = [];
             $currenttime = date('Y-m-d h:i:s');
             RoleMenu::where('role_id', $request->role_id)->delete();
             for ($i = 0; $i < count($request->role_access); $i++) {

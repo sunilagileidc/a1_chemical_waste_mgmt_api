@@ -1,14 +1,14 @@
 <?php
-
 namespace App\Models;
 
-use App\Models\LookUp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class EmailTemplate extends Model
 {
-    use HasFactory;
+    use HasFactory, HasSlug;
 
     public $table = 'email_templates';
 
@@ -27,6 +27,7 @@ class EmailTemplate extends Model
         'status',
         'lang',
         'slug',
+        'is_mandatory',
         'createdby',
         'lastupdatedby',
         'created_at',
@@ -35,4 +36,10 @@ class EmailTemplate extends Model
         'is_standard',
     ];
 
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('template_name')
+            ->saveSlugsTo('slug');
+    }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('database_seeder', function (Blueprint $table) {
             $table->bigIncrements('id')->comment('primary key');
             $table->string('seeder', 250)->nullable()->comment('Seeder Class');
-            $table->string('status')->nullable()->default('Active')->comment('Seeder Status');
+            $table->integer('status')->default(1)->comment('Seeder Status');
         });
     }
 

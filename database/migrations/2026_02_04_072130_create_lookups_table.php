@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('lookups', function (Blueprint $table) {
-            $table->id()->comment('Primary Key Field');
+            $table->bigIncrements('id')->comment('primary key');
             $table->integer('parent_id')->default(0)->comment('Parent ID of the Lookup');
             $table->string('shortname', 100)->comment('Shortname of the Lookup');
             $table->string('longname', 500)->comment('Longname of the Lookup');

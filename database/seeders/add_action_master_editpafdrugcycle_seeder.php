@@ -1,0 +1,30 @@
+<?php
+
+namespace Database\Seeders;
+
+use Carbon\Carbon;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class add_action_master_editpafdrugcycle_seeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        DB::table('action_master')->insert([
+            [
+                'action_name' => 'EDIT PAF DRUG CYCLE',
+                'category'    => 'PAF',
+                'description' => null,
+                'status'      => 1,
+                'slug'        => 'paf-edit-paf-drug-cycle',
+                'created_by'  => 1,
+                'updated_by'  => 1,
+                'created_at'  => Carbon::now(),
+                'updated_at'  => Carbon::now(),
+            ]
+        ]);
+    }
+}

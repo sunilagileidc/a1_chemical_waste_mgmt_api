@@ -18,7 +18,6 @@ class Menu extends Model
 
     protected $fillable = [
         'id',
-        'is_header',
         'title',
         'icon',
         'href',

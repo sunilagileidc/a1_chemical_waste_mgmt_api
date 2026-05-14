@@ -14,11 +14,13 @@ class CreateCountriesTable extends Migration
     public function up()
     {
         Schema::create('countries', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id')->comment('primary key');
             $table->string('name', 100)->comment('Name of the country');
             $table->string('lang', 10)->nullable()->comment('Language');
             $table->bigInteger('header_id')->unsigned()->nullable()->comment('Header Id');
             $table->string('mobile_code', 10)->nullable()->comment('Mobile code');
+            $table->string('country_code', 3)->nullable()->comment('ISO 3166-1 alpha-2 country code (e.g., IN)');
+            $table->integer('is_whitelisted')->default(1)->comment('Indicates whether country is whitelisted (1) or blacklisted (0)');
             $table->integer('status')->default(1)->comment('Status if the record is active');
             $table->string('slug', 1000)->nullable()->comment('Uniquely generated slug for system countries');
             $table->integer('created_by')->nullable()->comment('Who created the record');

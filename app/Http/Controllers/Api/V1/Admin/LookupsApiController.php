@@ -1,11 +1,11 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\LookUp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class LookupsApiController extends Controller
 {
@@ -200,68 +200,144 @@ class LookupsApiController extends Controller
 
     public function store_lookups(Request $request)
     {
-        $currenttime = date('Y-m-d h:i:s');
-        $id = $request->id;
+        $currenttime = date('Y-m-d H:i:s');
+        $id = $request->id ?? 0;
+
         try {
 
+            $request->validate([
+                'shortname' => [
+                    'required',
+                    Rule::unique('lookups', 'shortname')->ignore($id),
+                ],
+                'longname' => 'required',
+                'description' => 'nullable',
+            ]);
+
             if ($id > 0) {
-                $lookup = LookUp::where('id', $id)
-                    ->update([
-                        'shortname' => $request->shortname,
-                        'longname' => $request->longname,
-                        'description' => $request->description,
-                        'updated_at' => $currenttime,
-                    ]);
-                $lookup = LookUp::where('id', $request->id)->first();
-                return response()->json(['status' => 'S', 'message' => trans('returnmessage.updatedsuccessfully'), 'lookups' => $lookup]);
+
+                LookUp::where('id', $id)->update([
+                    'shortname' => $request->shortname,
+                    'longname' => $request->longname,
+                    'description' => $request->description,
+                    'updated_at' => $currenttime,
+                ]);
+
+                $lookup = LookUp::find($id);
+
+                return response()->json([
+                    'status' => 'S',
+                    'message' => trans('returnmessage.updatedsuccessfully'),
+                    'lookups' => $lookup,
+                ]);
+
             } else {
+
                 $lookup = LookUp::create([
                     'shortname' => $request->shortname,
                     'longname' => $request->longname,
                     'description' => $request->description,
                     'created_at' => $currenttime,
                 ]);
-                return response()->json(['status' => 'S', 'message' => trans('returnmessage.createdsuccessfully'), 'lookups' => $lookup]);
+
+                return response()->json([
+                    'status' => 'S',
+                    'message' => trans('returnmessage.createdsuccessfully'),
+                    'lookups' => $lookup,
+                ]);
             }
+
         } catch (\Exception $e) {
-            return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'errordata' => $e->getmessage()]);
+
+            return response()->json([
+                'status' => 'E',
+                'message' => trans('returnmessage.error_processing'),
+                'errordata' => $e->getMessage(),
+            ], 500);
         }
     }
 
     public function store_child_lookups(Request $request)
     {
-        // Log::info("request in store child lookups");
-        // Log::info($request);die;
+        $currenttime = date('Y-m-d H:i:s');
+        $id = $request->id ?? 0;
 
-        $currenttime = date('Y-m-d h:i:s');
-        $id = $request->id;
         try {
 
             if ($id > 0) {
-                $lookup = LookUp::where('id', $id)
-                    ->update([
-                        'shortname' => $request->shortname,
-                        'longname' => $request->longname,
-                        'description' => $request->description,
-                        'updated_at' => $currenttime,
-                    ]);
-                $lookup = LookUp::where('id', $request->id)->first();
-                return response()->json(['status' => 'S', 'message' => trans('returnmessage.updatedsuccessfully'), 'lookups' => $lookup]);
+                $existing = LookUp::find($id);
+                $parentId = $existing->parent_id;
             } else {
+                $parent = LookUp::where('slug', $request->parentslug)->first();
 
-                $ParentLookUp = LookUp::where('slug', $request->parentslug)->first();
+                if (!$parent) {
+                    return response()->json([
+                        'status' => 'E',
+                        'message' => 'Parent lookup not found',
+                    ]);
+                }
+
+                $parentId = $parent->id;
+            }
+
+            // Validation (unique per parent_id)
+            $request->validate([
+                'shortname' => [
+                    'required',
+                    Rule::unique('lookups')
+                        ->where(function ($query) use ($parentId) {
+                            return $query->where('parent_id', $parentId);
+                        })
+                        ->ignore($id),
+                ],
+                'longname' => 'required',
+                'seq' => 'required',
+                'description' => 'nullable',
+            ]);
+
+            if ($id > 0) {
+
+                LookUp::where('id', $id)->update([
+                    'shortname' => $request->shortname,
+                    'longname' => $request->longname,
+                    'description' => $request->description,
+                    'seq' => $request->seq,
+                    'updated_at' => $currenttime,
+                ]);
+
+                $lookup = LookUp::find($id);
+
+                return response()->json([
+                    'status' => 'S',
+                    'message' => trans('returnmessage.updatedsuccessfully'),
+                    'lookups' => $lookup,
+                ]);
+
+            } else {
 
                 $lookup = LookUp::create([
                     'shortname' => $request->shortname,
                     'longname' => $request->longname,
                     'description' => $request->description,
-                    'parent_id' => $ParentLookUp->id,
+                    'seq' => $request->seq,
+                    'parent_id' => $parentId,
                     'created_at' => $currenttime,
                 ]);
-                return response()->json(['status' => 'S', 'message' => trans('returnmessage.createdsuccessfully'), 'lookups' => $lookup]);
+
+                return response()->json([
+                    'status' => 'S',
+                    'message' => trans('returnmessage.createdsuccessfully'),
+                    'lookups' => $lookup,
+                ]);
             }
+
         } catch (\Exception $e) {
-            return response()->json(['status' => 'E', 'message' => trans('returnmessage.error_processing'), 'errordata' => $e->getmessage()]);
+
+            return response()->json([
+                'status' => 'E',
+                'message' => trans('returnmessage.error_processing'),
+                'errordata' => $e->getMessage(),
+            ], 500);
         }
     }
 

@@ -181,6 +181,7 @@ class ActionMasterApiController extends Controller
                         'action_name' => $action->action_name,
                         'category'    => $action->category,
                         'description' => $action->description,
+                        'status'      => $action->status,
                         'checked'     => in_array($action->id, $assignedActions),
                     ];
                 });

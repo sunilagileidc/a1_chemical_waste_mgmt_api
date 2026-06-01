@@ -97,6 +97,7 @@ class DatabaseSeeder extends Seeder
         $this->runSeeder(add_drug_form_types_lookup_seeder::class);
         $this->runSeeder(add_confirm_text_paf_declaration_seeder::class);
         $this->runSeeder(add_settings_menu_seeder::class);
+        $this->runSeeder(RolesSeeder::class);
     }
 
     /**

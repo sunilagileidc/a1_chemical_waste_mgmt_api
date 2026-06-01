@@ -6,11 +6,11 @@ use App\Http\Controllers\Api\V1\Admin\AuditApiController;
 use App\Http\Controllers\Api\V1\Admin\ChangePasswordApiController;
 use App\Http\Controllers\Api\V1\Admin\ConnectedPharmacyApiController;
 use App\Http\Controllers\Api\V1\Admin\CountriesApiController;
+use App\Http\Controllers\Api\V1\Admin\CustomerApiController;
 use App\Http\Controllers\Api\V1\Admin\DocumentApiController;
-use App\Http\Controllers\Api\V1\Admin\PAFDocumentApiController;
-use App\Http\Controllers\Api\V1\Admin\SupplierSalesDataApiController;
 use App\Http\Controllers\Api\V1\Admin\DrugsApiController;
 use App\Http\Controllers\Api\V1\Admin\FileUploadApiController;
+use App\Http\Controllers\Api\V1\Admin\HaulierApiController;
 use App\Http\Controllers\Api\V1\Admin\IndicationsApiController;
 use App\Http\Controllers\Api\V1\Admin\InstitutionApiController;
 use App\Http\Controllers\Api\V1\Admin\LookupsApiController;
@@ -19,10 +19,13 @@ use App\Http\Controllers\Api\V1\Admin\MenuApiController;
 use App\Http\Controllers\Api\V1\Admin\NonConformaceRulesApiController;
 use App\Http\Controllers\Api\V1\Admin\PAFApiController;
 use App\Http\Controllers\Api\V1\Admin\PAFConfirmationTextApiController;
+use App\Http\Controllers\Api\V1\Admin\PAFDocumentApiController;
 use App\Http\Controllers\Api\V1\Admin\PharmacyApiController;
 use App\Http\Controllers\Api\V1\Admin\PolicyAssignQuestionsApiController;
 use App\Http\Controllers\Api\V1\Admin\PolicyQuestionsApiController;
 use App\Http\Controllers\Api\V1\Admin\RolesApiController;
+use App\Http\Controllers\Api\V1\Admin\SupplierApiController;
+use App\Http\Controllers\Api\V1\Admin\SupplierSalesDataApiController;
 use App\Http\Controllers\Api\V1\Admin\SystemParameterApiController;
 use App\Http\Controllers\Api\V1\Admin\UserApiController;
 use App\Http\Controllers\Api\V1\Admin\WolesalersApiController;
@@ -309,4 +312,28 @@ Route::middleware('auth:api')->group(function () {
     // Supplier Sales Data
     Route::get('/get_supplier_sales_data', [SupplierSalesDataApiController::class, 'index']);
     Route::post('upload_supplier_sales_data', [SupplierSalesDataApiController::class, 'upload']);
+
+    // Customer Api Controller
+    Route::get('customers', [CustomerApiController::class, 'index']);
+    Route::get('customer/{id}', [CustomerApiController::class, 'getCustomerById']);
+    Route::get('customerbyslug/{slug}', [CustomerApiController::class, 'getCustomerBySlug']);
+    Route::post('savecustomer', [CustomerApiController::class, 'saveCustomer']);
+    Route::delete('deletecustomer/{id}', [CustomerApiController::class, 'deleteCustomer']);
+    Route::post('updatecustomerstatus', [CustomerApiController::class, 'updateCustomerStatus']);
+
+    //Supplier Api Controller
+    Route::get('suppliers', [SupplierApiController::class, 'index']);
+    Route::get('supplier/{id}', [SupplierApiController::class, 'getSupplierById']);
+    Route::get('supplierbyslug/{slug}', [SupplierApiController::class, 'getSupplierBySlug']);
+    Route::post('savesupplier', [SupplierApiController::class, 'saveSupplier']);
+    Route::delete('deletesupplier/{id}', [SupplierApiController::class, 'deleteSupplier']);
+    Route::post('updatesupplierstatus', [SupplierApiController::class, 'updateSupplierStatus']);
+
+    //Haulier Api Controller
+    Route::get('hauliers', [HaulierApiController::class, 'index']);
+    Route::get('haulier/{id}', [HaulierApiController::class, 'getHaulierById']);
+    Route::get('haulierbyslug/{slug}', [HaulierApiController::class, 'getHaulierBySlug']);
+    Route::post('savehaulier', [HaulierApiController::class, 'saveHaulier']);
+    Route::delete('deletehaulier/{id}', [HaulierApiController::class, 'deleteHaulier']);
+    Route::post('updatehaulierstatus', [HaulierApiController::class, 'updateHaulierStatus']);
 });

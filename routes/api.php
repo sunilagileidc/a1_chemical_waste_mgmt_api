@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\Admin\ChangePasswordApiController;
 use App\Http\Controllers\Api\V1\Admin\ConnectedPharmacyApiController;
 use App\Http\Controllers\Api\V1\Admin\CountriesApiController;
 use App\Http\Controllers\Api\V1\Admin\CustomerApiController;
+use App\Http\Controllers\Api\V1\Admin\CustomerIndividualApiController;
 use App\Http\Controllers\Api\V1\Admin\DocumentApiController;
 use App\Http\Controllers\Api\V1\Admin\DrugsApiController;
 use App\Http\Controllers\Api\V1\Admin\FileUploadApiController;
@@ -32,7 +33,6 @@ use App\Http\Controllers\Api\V1\Admin\WolesalersApiController;
 use App\Http\Controllers\Api\V1\Auth\LoginApiController;
 use App\Http\Controllers\Api\V1\Auth\RecoverPasswordApiController;
 use App\Http\Controllers\Api\V1\Auth\UserRegistrationApiController;
-use Illuminate\Support\Facades\Route;
 
 //registration
 Route::post('register', [LoginApiController::class, 'register']);
@@ -336,4 +336,13 @@ Route::middleware('auth:api')->group(function () {
     Route::post('savehaulier', [HaulierApiController::class, 'saveHaulier']);
     Route::delete('deletehaulier/{id}', [HaulierApiController::class, 'deleteHaulier']);
     Route::post('updatehaulierstatus', [HaulierApiController::class, 'updateHaulierStatus']);
+
+    //Customer Individual Api Controller
+    Route::get('customercontacts', [CustomerIndividualApiController::class, 'index']);
+    Route::get('customercontactsbycustomer/{id}', [CustomerIndividualApiController::class, 'getContactsByCustomer']);
+    Route::get('customerindividual/{id}',[CustomerIndividualApiController::class, 'getById']);
+    Route::get('customercontact/{id}', [CustomerIndividualApiController::class, 'getContactById']);
+    Route::post('savecustomercontact', [CustomerIndividualApiController::class, 'saveContact']);
+    Route::delete('deletecustomercontact/{id}', [CustomerIndividualApiController::class, 'deleteContact']);
+    Route::post('updatecustomercontactstatus', [CustomerIndividualApiController::class, 'updateContactStatus']);
 });

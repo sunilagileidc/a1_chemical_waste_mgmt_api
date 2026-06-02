@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,4 +25,8 @@ class Customer extends Model
         'created_by',
         'updated_by',
     ];
+    public function individuals()
+    {
+        return $this->hasMany(CustomerIndividual::class, 'customer_id', 'id');
+    }
 }

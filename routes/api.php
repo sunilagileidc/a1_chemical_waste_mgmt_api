@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\Admin\ConnectedPharmacyApiController;
 use App\Http\Controllers\Api\V1\Admin\CountriesApiController;
 use App\Http\Controllers\Api\V1\Admin\CustomerApiController;
 use App\Http\Controllers\Api\V1\Admin\CustomerIndividualApiController;
+use App\Http\Controllers\Api\V1\Admin\SupplierIndividualApiController;
 use App\Http\Controllers\Api\V1\Admin\DocumentApiController;
 use App\Http\Controllers\Api\V1\Admin\DrugsApiController;
 use App\Http\Controllers\Api\V1\Admin\FileUploadApiController;
@@ -345,4 +346,13 @@ Route::middleware('auth:api')->group(function () {
     Route::post('savecustomercontact', [CustomerIndividualApiController::class, 'saveContact']);
     Route::delete('deletecustomercontact/{id}', [CustomerIndividualApiController::class, 'deleteContact']);
     Route::post('updatecustomercontactstatus', [CustomerIndividualApiController::class, 'updateContactStatus']);
+
+    //Supplier Individual Api Controller
+    Route::get('suppliercontacts', [SupplierIndividualApiController::class, 'index']);
+    Route::get('suppliercontactsby supplier/{id}', [SupplierIndividualApiController::class, 'getContactsBySupplier']);
+    Route::get('supplierindividual/{id}',[SupplierIndividualApiController::class, 'getById']);
+    Route::get('suppliercontact/{id}', [SupplierIndividualApiController::class, 'getContactById']);
+    Route::post('savesuppliercontact', [SupplierIndividualApiController::class, 'saveContact']);
+    Route::delete('deletesuppliercontact/{id}', [SupplierIndividualApiController::class, 'deleteContact']);
+    Route::post('updatesuppliercontactstatus', [SupplierIndividualApiController::class, 'updateContactStatus']);
 });

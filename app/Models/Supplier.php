@@ -23,4 +23,8 @@ class Supplier extends Model
         'created_by',
         'updated_by',
     ];
+    public function individuals()
+    {
+        return $this->hasMany(SupplierIndividual::class, 'supplier_id', 'id');
+    }
 }

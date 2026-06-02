@@ -12,21 +12,42 @@ class SupplierApiController extends Controller
     /**
      * Fetch all suppliers
      */
+    // public function index()
+    // {
+    //     try {
+    //         $suppliers = Supplier::orderBy('id', 'desc')->get();
+
+    //         return response()->json([
+    //             'status' => 'S',
+    //             'message' => trans('returnmessage.dataretreived'),
+    //             'suppliers' => $suppliers
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => 'E',
+    //             'message' => trans('returnmessage.error_processing'),
+    //             'error_data' => $e->getMessage()
+    //         ]);
+    //     }
+    // }
     public function index()
     {
         try {
-            $suppliers = Supplier::orderBy('id', 'desc')->get();
+
+            $suppliers = Supplier::with('individuals')->get();
 
             return response()->json([
-                'status' => 'S',
-                'message' => trans('returnmessage.dataretreived'),
-                'suppliers' => $suppliers
+                'status'    => 'S',
+                'message'   => trans('returnmessage.dataretreived'),
+                'suppliers' => $suppliers,
             ]);
+
         } catch (\Exception $e) {
+
             return response()->json([
-                'status' => 'E',
-                'message' => trans('returnmessage.error_processing'),
-                'error_data' => $e->getMessage()
+                'status'     => 'E',
+                'message'    => trans('returnmessage.error_processing'),
+                'error_data' => $e->getMessage(),
             ]);
         }
     }

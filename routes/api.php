@@ -8,11 +8,12 @@ use App\Http\Controllers\Api\V1\Admin\ConnectedPharmacyApiController;
 use App\Http\Controllers\Api\V1\Admin\CountriesApiController;
 use App\Http\Controllers\Api\V1\Admin\CustomerApiController;
 use App\Http\Controllers\Api\V1\Admin\CustomerIndividualApiController;
-use App\Http\Controllers\Api\V1\Admin\SupplierIndividualApiController;
 use App\Http\Controllers\Api\V1\Admin\DocumentApiController;
 use App\Http\Controllers\Api\V1\Admin\DrugsApiController;
 use App\Http\Controllers\Api\V1\Admin\FileUploadApiController;
 use App\Http\Controllers\Api\V1\Admin\HaulierApiController;
+use App\Http\Controllers\Api\V1\Admin\HaulierIndividualApiController;
+use App\Http\Controllers\Api\V1\Admin\WasteStreamApiController;
 use App\Http\Controllers\Api\V1\Admin\IndicationsApiController;
 use App\Http\Controllers\Api\V1\Admin\InstitutionApiController;
 use App\Http\Controllers\Api\V1\Admin\LookupsApiController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\Api\V1\Admin\PolicyAssignQuestionsApiController;
 use App\Http\Controllers\Api\V1\Admin\PolicyQuestionsApiController;
 use App\Http\Controllers\Api\V1\Admin\RolesApiController;
 use App\Http\Controllers\Api\V1\Admin\SupplierApiController;
+use App\Http\Controllers\Api\V1\Admin\SupplierIndividualApiController;
 use App\Http\Controllers\Api\V1\Admin\SupplierSalesDataApiController;
 use App\Http\Controllers\Api\V1\Admin\SystemParameterApiController;
 use App\Http\Controllers\Api\V1\Admin\UserApiController;
@@ -341,7 +343,7 @@ Route::middleware('auth:api')->group(function () {
     //Customer Individual Api Controller
     Route::get('customercontacts', [CustomerIndividualApiController::class, 'index']);
     Route::get('customercontactsbycustomer/{id}', [CustomerIndividualApiController::class, 'getContactsByCustomer']);
-    Route::get('customerindividual/{id}',[CustomerIndividualApiController::class, 'getById']);
+    Route::get('customerindividual/{id}', [CustomerIndividualApiController::class, 'getById']);
     Route::get('customercontact/{id}', [CustomerIndividualApiController::class, 'getContactById']);
     Route::post('savecustomercontact', [CustomerIndividualApiController::class, 'saveContact']);
     Route::delete('deletecustomercontact/{id}', [CustomerIndividualApiController::class, 'deleteContact']);
@@ -350,9 +352,23 @@ Route::middleware('auth:api')->group(function () {
     //Supplier Individual Api Controller
     Route::get('suppliercontacts', [SupplierIndividualApiController::class, 'index']);
     Route::get('suppliercontactsby supplier/{id}', [SupplierIndividualApiController::class, 'getContactsBySupplier']);
-    Route::get('supplierindividual/{id}',[SupplierIndividualApiController::class, 'getById']);
+    Route::get('supplierindividual/{id}', [SupplierIndividualApiController::class, 'getById']);
     Route::get('suppliercontact/{id}', [SupplierIndividualApiController::class, 'getContactById']);
     Route::post('savesuppliercontact', [SupplierIndividualApiController::class, 'saveContact']);
     Route::delete('deletesuppliercontact/{id}', [SupplierIndividualApiController::class, 'deleteContact']);
     Route::post('updatesuppliercontactstatus', [SupplierIndividualApiController::class, 'updateContactStatus']);
+
+    //Haulier Individual Api Controller
+    Route::get('hauliercontacts', [HaulierIndividualApiController::class, 'index']);
+    Route::get('hauliercontactsby haulier/{id}', [HaulierIndividualApiController::class, 'getContactsByHaulier']);
+    Route::get('haulierindividual/{id}', [HaulierIndividualApiController::class, 'getById']);
+    Route::get('hauliercontact/{id}', [HaulierIndividualApiController::class, 'getContactById']);
+    Route::post('savehauliercontact', [HaulierIndividualApiController::class, 'saveContact']);
+    Route::delete('deletehauliercontact/{id}', [HaulierIndividualApiController::class, 'deleteContact']);
+    Route::post('updatehauliercontactstatus', [HaulierIndividualApiController::class, 'updateContactStatus']);
+
+    //Waste Stream Api Controller
+    Route::get('wastestreams', [WasteStreamApiController::class, 'index']);
+    Route::post('savewastestream', [WasteStreamApiController::class, 'save']);
+    Route::get('wastestreambyslug/{slug}', [WasteStreamApiController::class, 'bySlug']);
 });

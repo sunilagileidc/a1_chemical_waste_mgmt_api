@@ -23,4 +23,8 @@ class Haulier extends Model
         'created_by',
         'updated_by',
     ];
+    public function individuals()
+    {
+        return $this->hasMany(HaulierIndividual::class, 'haulier_id', 'id');
+    }
 }

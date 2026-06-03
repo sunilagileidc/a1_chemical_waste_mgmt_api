@@ -12,24 +12,45 @@ class HaulierApiController extends Controller
     /**
      * Fetch all hauliers
      */
+    // public function index()
+    // {
+    //     try {
+
+    //         $hauliers = Haulier::orderBy('id', 'desc')->get();
+
+    //         return response()->json([
+    //             'status' => 'S',
+    //             'message' => trans('returnmessage.dataretreived'),
+    //             'hauliers' => $hauliers
+    //         ]);
+
+    //     } catch (\Exception $e) {
+
+    //         return response()->json([
+    //             'status' => 'E',
+    //             'message' => trans('returnmessage.error_processing'),
+    //             'error_data' => $e->getMessage()
+    //         ]);
+    //     }
+    // }
     public function index()
     {
         try {
 
-            $hauliers = Haulier::orderBy('id', 'desc')->get();
+            $hauliers = Haulier::with('individuals')->get();
 
             return response()->json([
-                'status' => 'S',
-                'message' => trans('returnmessage.dataretreived'),
-                'hauliers' => $hauliers
+                'status'    => 'S',
+                'message'   => trans('returnmessage.dataretreived'),
+                'hauliers' => $hauliers,
             ]);
 
         } catch (\Exception $e) {
 
             return response()->json([
-                'status' => 'E',
-                'message' => trans('returnmessage.error_processing'),
-                'error_data' => $e->getMessage()
+                'status'     => 'E',
+                'message'    => trans('returnmessage.error_processing'),
+                'error_data' => $e->getMessage(),
             ]);
         }
     }

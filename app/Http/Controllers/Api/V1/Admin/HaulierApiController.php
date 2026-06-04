@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
@@ -12,27 +11,6 @@ class HaulierApiController extends Controller
     /**
      * Fetch all hauliers
      */
-    // public function index()
-    // {
-    //     try {
-
-    //         $hauliers = Haulier::orderBy('id', 'desc')->get();
-
-    //         return response()->json([
-    //             'status' => 'S',
-    //             'message' => trans('returnmessage.dataretreived'),
-    //             'hauliers' => $hauliers
-    //         ]);
-
-    //     } catch (\Exception $e) {
-
-    //         return response()->json([
-    //             'status' => 'E',
-    //             'message' => trans('returnmessage.error_processing'),
-    //             'error_data' => $e->getMessage()
-    //         ]);
-    //     }
-    // }
     public function index()
     {
         try {
@@ -40,8 +18,8 @@ class HaulierApiController extends Controller
             $hauliers = Haulier::with('individuals')->get();
 
             return response()->json([
-                'status'    => 'S',
-                'message'   => trans('returnmessage.dataretreived'),
+                'status'   => 'S',
+                'message'  => trans('returnmessage.dataretreived'),
                 'hauliers' => $hauliers,
             ]);
 
@@ -65,15 +43,15 @@ class HaulierApiController extends Controller
             $haulier = Haulier::find($id);
 
             return response()->json([
-                'status' => 'S',
-                'haulier' => $haulier
+                'status'  => 'S',
+                'haulier' => $haulier,
             ]);
 
         } catch (\Exception $e) {
 
             return response()->json([
-                'status' => 'E',
-                'message' => $e->getMessage()
+                'status'  => 'E',
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -88,15 +66,15 @@ class HaulierApiController extends Controller
             $haulier = Haulier::where('slug', $slug)->first();
 
             return response()->json([
-                'status' => 'S',
-                'haulier' => $haulier
+                'status'  => 'S',
+                'haulier' => $haulier,
             ]);
 
         } catch (\Exception $e) {
 
             return response()->json([
-                'status' => 'E',
-                'message' => $e->getMessage()
+                'status'  => 'E',
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -107,14 +85,14 @@ class HaulierApiController extends Controller
     public function saveHaulier(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'haulier_name' => 'required',
+            'haulier_name'  => 'required',
             'haulier_email' => 'nullable|email',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'E',
-                'message' => $validator->errors()->all()
+                'status'  => 'E',
+                'message' => $validator->errors()->all(),
             ]);
         }
 
@@ -123,43 +101,49 @@ class HaulierApiController extends Controller
             if ($request->id > 0) {
 
                 Haulier::where('id', $request->id)->update([
-                    'haulier_name' => $request->haulier_name,
-                    'haulier_address' => $request->haulier_address,
-                    'haulier_postcode' => $request->haulier_postcode,
+                    'haulier_name'      => $request->haulier_name,
+                    'haulier_address'   => $request->haulier_address,
+                    'haulier_postcode'  => $request->haulier_postcode,
                     'haulier_telephone' => $request->haulier_telephone,
-                    'haulier_email' => $request->haulier_email,
-                    'haulier_license' => $request->haulier_license,
-                    'active' => $request->active,
+                    'haulier_email'     => $request->haulier_email,
+                    'haulier_license'   => $request->haulier_license,
+                    'active'            => $request->active,
+                    'updated_by'        => auth()->id(),
+                    'updated_at'        => now(),
                 ]);
 
                 return response()->json([
-                    'status' => 'S',
-                    'message' => trans('returnmessage.updatedsuccessfully')
+                    'status'  => 'S',
+                    'message' => trans('returnmessage.updatedsuccessfully'),
                 ]);
             }
 
             Haulier::create([
-                'haulier_name' => $request->haulier_name,
-                'haulier_address' => $request->haulier_address,
-                'haulier_postcode' => $request->haulier_postcode,
+                'haulier_name'      => $request->haulier_name,
+                'haulier_address'   => $request->haulier_address,
+                'haulier_postcode'  => $request->haulier_postcode,
                 'haulier_telephone' => $request->haulier_telephone,
-                'haulier_email' => $request->haulier_email,
-                'haulier_license' => $request->haulier_license,
-                'active' => 1,
-                'slug' => uniqid(),
+                'haulier_email'     => $request->haulier_email,
+                'haulier_license'   => $request->haulier_license,
+                'active'            => 1,
+                'slug'              => uniqid(),
+                'created_by'        => auth()->id(),
+                'updated_by'        => auth()->id(),
+                'created_at'        => now(),
+                'updated_at'        => now(),
             ]);
 
             return response()->json([
-                'status' => 'S',
-                'message' => trans('returnmessage.createdsuccessfully')
+                'status'  => 'S',
+                'message' => trans('returnmessage.createdsuccessfully'),
             ]);
 
         } catch (\Exception $e) {
 
             return response()->json([
-                'status' => 'E',
-                'message' => trans('returnmessage.error_processing'),
-                'error_data' => $e->getMessage()
+                'status'     => 'E',
+                'message'    => trans('returnmessage.error_processing'),
+                'error_data' => $e->getMessage(),
             ]);
         }
     }
@@ -174,15 +158,15 @@ class HaulierApiController extends Controller
             Haulier::where('id', $id)->delete();
 
             return response()->json([
-                'status' => 'S',
-                'message' => trans('returnmessage.deletedsuccessfully')
+                'status'  => 'S',
+                'message' => trans('returnmessage.deletedsuccessfully'),
             ]);
 
         } catch (\Exception $e) {
 
             return response()->json([
-                'status' => 'E',
-                'message' => $e->getMessage()
+                'status'  => 'E',
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -196,20 +180,22 @@ class HaulierApiController extends Controller
 
             $haulier = Haulier::find($request->id);
 
-            $haulier->active = $haulier->active ? 0 : 1;
+            $haulier->active     = $haulier->active ? 0 : 1;
+            $haulier->updated_by = auth()->id();
+            $haulier->updated_at = now();
 
             $haulier->save();
 
             return response()->json([
-                'status' => 'S',
-                'message' => trans('returnmessage.saved_success')
+                'status'  => 'S',
+                'message' => trans('returnmessage.saved_success'),
             ]);
 
         } catch (\Exception $e) {
 
             return response()->json([
-                'status' => 'E',
-                'message' => $e->getMessage()
+                'status'  => 'E',
+                'message' => $e->getMessage(),
             ]);
         }
     }

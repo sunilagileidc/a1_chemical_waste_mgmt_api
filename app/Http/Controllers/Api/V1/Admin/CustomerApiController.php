@@ -230,13 +230,17 @@ class CustomerApiController extends Controller
             if ($customer->active == 1) {
 
                 $customer->update([
-                    'active' => 0,
+                    'active'     => 0,
+                    'updated_by' => auth()->id(),
+                    'updated_at' => now(),
                 ]);
 
             } else {
 
                 $customer->update([
-                    'active' => 1,
+                    'active'     => 1,
+                    'updated_by' => auth()->id(),
+                    'updated_at' => now(),
                 ]);
 
             }

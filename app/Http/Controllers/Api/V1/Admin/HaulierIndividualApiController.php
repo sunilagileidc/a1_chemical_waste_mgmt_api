@@ -70,7 +70,7 @@ class HaulierIndividualApiController extends Controller
             }
 
             return response()->json([
-                'status'              => 'S',
+                'status'             => 'S',
                 'haulier_individual' => $haulierIndividual,
             ]);
 
@@ -112,10 +112,10 @@ class HaulierIndividualApiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'haulier_id' => 'required',
-            'name'        => 'required',
-            'telephone'   => 'required',
-            'email'       => 'required',
-            'position'    => 'required',
+            'name'       => 'required',
+            'telephone'  => 'required',
+            'email'      => 'required',
+            'position'   => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -132,11 +132,13 @@ class HaulierIndividualApiController extends Controller
                 HaulierIndividual::where('id', $request->id)
                     ->update([
                         'haulier_id' => $request->haulier_id,
-                        'name'        => $request->name,
-                        'telephone'   => $request->telephone,
-                        'email'       => $request->email,
-                        'position'    => $request->position,
-                        'active'      => $request->active ?? 1,
+                        'name'       => $request->name,
+                        'telephone'  => $request->telephone,
+                        'email'      => $request->email,
+                        'position'   => $request->position,
+                        'active'     => $request->active ?? 1,
+                        'updated_by' => auth()->id(),
+                        'updated_at' => now(),
                     ]);
 
                 return response()->json([
@@ -148,11 +150,15 @@ class HaulierIndividualApiController extends Controller
 
                 HaulierIndividual::create([
                     'haulier_id' => $request->haulier_id,
-                    'name'        => $request->name,
-                    'telephone'   => $request->telephone,
-                    'email'       => $request->email,
-                    'position'    => $request->position,
-                    'active'      => $request->active ?? 1,
+                    'name'       => $request->name,
+                    'telephone'  => $request->telephone,
+                    'email'      => $request->email,
+                    'position'   => $request->position,
+                    'active'     => $request->active ?? 1,
+                    'created_by' => auth()->id(),
+                    'updated_by' => auth()->id(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
 
                 return response()->json([
@@ -207,7 +213,9 @@ class HaulierIndividualApiController extends Controller
             $status = $contact->active == 1 ? 0 : 1;
 
             $contact->update([
-                'active' => $status,
+                'active'     => $status,
+                'updated_by' => auth()->id(),
+                'updated_at' => now(),
             ]);
 
             return response()->json([

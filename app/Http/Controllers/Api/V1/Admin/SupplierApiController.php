@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
@@ -61,13 +60,13 @@ class SupplierApiController extends Controller
             $supplier = Supplier::find($id);
 
             return response()->json([
-                'status' => 'S',
-                'supplier' => $supplier
+                'status'   => 'S',
+                'supplier' => $supplier,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'E',
-                'message' => $e->getMessage()
+                'status'  => 'E',
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -81,13 +80,13 @@ class SupplierApiController extends Controller
             $supplier = Supplier::where('slug', $slug)->first();
 
             return response()->json([
-                'status' => 'S',
-                'supplier' => $supplier
+                'status'   => 'S',
+                'supplier' => $supplier,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'E',
-                'message' => $e->getMessage()
+                'status'  => 'E',
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -98,14 +97,14 @@ class SupplierApiController extends Controller
     public function saveSupplier(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'supplier_name' => 'required',
+            'supplier_name'  => 'required',
             'supplier_email' => 'nullable|email',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => 'E',
-                'message' => $validator->errors()->all()
+                'status'  => 'E',
+                'message' => $validator->errors()->all(),
             ]);
         }
 
@@ -114,42 +113,48 @@ class SupplierApiController extends Controller
             if ($request->id > 0) {
 
                 Supplier::where('id', $request->id)->update([
-                    'supplier_name' => $request->supplier_name,
-                    'supplier_address' => $request->supplier_address,
-                    'supplier_postcode' => $request->supplier_postcode,
+                    'supplier_name'      => $request->supplier_name,
+                    'supplier_address'   => $request->supplier_address,
+                    'supplier_postcode'  => $request->supplier_postcode,
                     'supplier_telephone' => $request->supplier_telephone,
-                    'supplier_email' => $request->supplier_email,
-                    'supplier_license' => $request->supplier_license,
-                    'active' => $request->active,
+                    'supplier_email'     => $request->supplier_email,
+                    'supplier_license'   => $request->supplier_license,
+                    'active'             => $request->active,
+                    'updated_by'         => auth()->id(),
+                    'updated_at'         => now(),
                 ]);
 
                 return response()->json([
-                    'status' => 'S',
-                    'message' => trans('returnmessage.updatedsuccessfully')
+                    'status'  => 'S',
+                    'message' => trans('returnmessage.updatedsuccessfully'),
                 ]);
             }
 
             Supplier::create([
-                'supplier_name' => $request->supplier_name,
-                'supplier_address' => $request->supplier_address,
-                'supplier_postcode' => $request->supplier_postcode,
+                'supplier_name'      => $request->supplier_name,
+                'supplier_address'   => $request->supplier_address,
+                'supplier_postcode'  => $request->supplier_postcode,
                 'supplier_telephone' => $request->supplier_telephone,
-                'supplier_email' => $request->supplier_email,
-                'supplier_license' => $request->supplier_license,
-                'active' => 1,
-                'slug' => uniqid(),
+                'supplier_email'     => $request->supplier_email,
+                'supplier_license'   => $request->supplier_license,
+                'active'             => 1,
+                'slug'               => uniqid(),
+                'created_by'         => auth()->id(),
+                'updated_by'         => auth()->id(),
+                'created_at'         => now(),
+                'updated_at'         => now(),
             ]);
 
             return response()->json([
-                'status' => 'S',
-                'message' => trans('returnmessage.createdsuccessfully')
+                'status'  => 'S',
+                'message' => trans('returnmessage.createdsuccessfully'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'E',
-                'message' => trans('returnmessage.error_processing'),
-                'error_data' => $e->getMessage()
+                'status'     => 'E',
+                'message'    => trans('returnmessage.error_processing'),
+                'error_data' => $e->getMessage(),
             ]);
         }
     }
@@ -164,14 +169,14 @@ class SupplierApiController extends Controller
             Supplier::where('id', $id)->delete();
 
             return response()->json([
-                'status' => 'S',
-                'message' => trans('returnmessage.deletedsuccessfully')
+                'status'  => 'S',
+                'message' => trans('returnmessage.deletedsuccessfully'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'E',
-                'message' => $e->getMessage()
+                'status'  => 'E',
+                'message' => $e->getMessage(),
             ]);
         }
     }
@@ -185,19 +190,21 @@ class SupplierApiController extends Controller
 
             $supplier = Supplier::find($request->id);
 
-            $supplier->active = $supplier->active ? 0 : 1;
+            $supplier->active     = $supplier->active ? 0 : 1;
+            $supplier->updated_by = auth()->id();
+            $supplier->updated_at = now();
 
             $supplier->save();
 
             return response()->json([
-                'status' => 'S',
-                'message' => trans('returnmessage.saved_success')
+                'status'  => 'S',
+                'message' => trans('returnmessage.saved_success'),
             ]);
 
         } catch (\Exception $e) {
             return response()->json([
-                'status' => 'E',
-                'message' => $e->getMessage()
+                'status'  => 'E',
+                'message' => $e->getMessage(),
             ]);
         }
     }

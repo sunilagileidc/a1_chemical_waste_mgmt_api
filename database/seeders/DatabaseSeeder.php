@@ -98,6 +98,8 @@ class DatabaseSeeder extends Seeder
         $this->runSeeder(add_confirm_text_paf_declaration_seeder::class);
         $this->runSeeder(add_settings_menu_seeder::class);
         $this->runSeeder(RolesSeeder::class);
+        $this->runSeeder(add_menu_seeder::class);
+        $this->runSeeder(add_sales_quotation_menu_seeder::class);
     }
 
     /**

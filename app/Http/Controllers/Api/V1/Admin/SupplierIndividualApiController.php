@@ -137,6 +137,8 @@ class SupplierIndividualApiController extends Controller
                         'email'       => $request->email,
                         'position'    => $request->position,
                         'active'      => $request->active ?? 1,
+                        'updated_by'  => auth()->id(),
+                        'updated_at'  => now(),
                     ]);
 
                 return response()->json([
@@ -153,6 +155,10 @@ class SupplierIndividualApiController extends Controller
                     'email'       => $request->email,
                     'position'    => $request->position,
                     'active'      => $request->active ?? 1,
+                    'created_by'  => auth()->id(),
+                    'updated_by'  => auth()->id(),
+                    'created_at'  => now(),
+                    'updated_at'  => now(),
                 ]);
 
                 return response()->json([
@@ -207,7 +213,9 @@ class SupplierIndividualApiController extends Controller
             $status = $contact->active == 1 ? 0 : 1;
 
             $contact->update([
-                'active' => $status,
+                'active'     => $status,
+                'updated_by' => auth()->id(),
+                'updated_at' => now(),
             ]);
 
             return response()->json([

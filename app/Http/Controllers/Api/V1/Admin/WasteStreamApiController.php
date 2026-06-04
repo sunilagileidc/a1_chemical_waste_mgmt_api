@@ -76,7 +76,7 @@ class WasteStreamApiController extends Controller
                     'waste_ass_raj'       => $request->waste_ass_raj,
                     'waste_rd_color'      => $request->waste_rd_color,
                     'updated_by'          => auth()->id(),
-
+                    'updated_at'          => now(),
                 ]);
 
                 return response()->json([
@@ -108,6 +108,9 @@ class WasteStreamApiController extends Controller
                     . '-' . time(),
 
                     'created_by'          => auth()->id(),
+                    'updated_by'          => auth()->id(),
+                    'created_at'          => now(),
+                    'updated_at'          => now(),
 
                 ]);
 

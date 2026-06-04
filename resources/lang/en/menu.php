@@ -25,5 +25,6 @@ return [
     'Suppliers'           => 'Suppliers',
     'Hauliers'             => 'Hauliers',
     'Waste Stream'          => 'Waste Stream',
+    'Sales Quotations'          => 'Sales Quotations',
     
 ];

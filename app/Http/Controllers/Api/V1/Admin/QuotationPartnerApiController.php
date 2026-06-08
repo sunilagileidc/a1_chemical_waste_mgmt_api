@@ -2,9 +2,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Haulier;
 use App\Models\QuotationPartner;
-use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -12,30 +10,20 @@ class QuotationPartnerApiController extends Controller
 {
     public function index($quotation_id)
     {
-
-        $data = QuotationPartner::where(
-            'sales_quotation_id',
-            $quotation_id
-        )
+        $data = QuotationPartner::with([
+            'supplier',
+            'haulier',
+        ])
+            ->where(
+                'sales_quotation_id',
+                $quotation_id
+            )
             ->get();
-
-        foreach ($data as $row) {
-
-            if ($row->partner_type == 'supplier') {
-                $row->partner = Supplier::find($row->partner_id);
-            }
-
-            if ($row->partner_type == 'haulier') {
-                $row->partner = Haulier::find($row->partner_id);
-            }
-
-        }
 
         return response()->json([
             'status'   => 'S',
             'partners' => $data,
         ]);
-
     }
     public function save(Request $request)
     {

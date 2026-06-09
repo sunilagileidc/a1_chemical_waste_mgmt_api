@@ -9,31 +9,14 @@ use Illuminate\Support\Facades\Validator;
 class CustomerApiController extends Controller
 {
     /**
-     * Fetch all customers
+     * @function: to fetch customer details.
+     *
+     * @author: Swasthik
+     *
+     * @created-on: 1 Jun, 2026
+     *
+     * @updated-on: N/A
      */
-    // public function index()
-    // {
-    //     try {
-
-    //         // $customers = Customer::orderBy('id', 'DESC')->get();
-    //         $customers = Customer::with('contacts')->get();
-
-    //         return response()->json([
-    //             'status' => 'S',
-    //             'message' => trans('returnmessage.dataretreived'),
-    //             'customers' => $customers
-    //         ]);
-
-    //     } catch (\Exception $e) {
-
-    //         return response()->json([
-    //             'status' => 'E',
-    //             'message' => trans('returnmessage.error_processing'),
-    //             'error_data' => $e->getMessage()
-    //         ]);
-
-    //     }
-    // }
     public function index()
     {
         try {

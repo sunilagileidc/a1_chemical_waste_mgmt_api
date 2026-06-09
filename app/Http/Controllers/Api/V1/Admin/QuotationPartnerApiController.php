@@ -8,6 +8,15 @@ use Validator;
 
 class QuotationPartnerApiController extends Controller
 {
+    /**
+     * @function: to fetch quotation partner details.
+     *
+     * @author: Swasthik
+     *
+     * @created-on: 1 Jun, 2026
+     *
+     * @updated-on: N/A
+     */
     public function index($quotation_id)
     {
         $data = QuotationPartner::with([

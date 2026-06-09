@@ -9,6 +9,15 @@ use Validator;
 
 class WasteStreamApiController extends Controller
 {
+    /**
+     * @function: to fetch waste stream details.
+     *
+     * @author: Swasthik
+     *
+     * @created-on: 1 Jun, 2026
+     *
+     * @updated-on: N/A
+     */
 
     public function index()
     {

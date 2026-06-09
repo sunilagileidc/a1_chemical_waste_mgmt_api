@@ -10,6 +10,15 @@ use Validator;
 
 class SalesQuotationApiController extends Controller
 {
+    /**
+     * @function: to fetch sales quotation details.
+     *
+     * @author: Swasthik
+     *
+     * @created-on: 1 Jun, 2026
+     *
+     * @updated-on: N/A
+     */
 
     public function index()
     {

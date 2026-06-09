@@ -9,6 +9,15 @@ use Illuminate\Support\Facades\Validator;
 class HaulierApiController extends Controller
 {
     /**
+     * @function: to fetch Haulier details.
+     *
+     * @author: Swasthik
+     *
+     * @created-on: 1 Jun, 2026
+     *
+     * @updated-on: N/A
+     */
+    /**
      * Fetch all hauliers
      */
     public function index()

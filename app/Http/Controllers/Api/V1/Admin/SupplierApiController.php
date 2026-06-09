@@ -9,26 +9,14 @@ use Illuminate\Support\Facades\Validator;
 class SupplierApiController extends Controller
 {
     /**
-     * Fetch all suppliers
+     * @function: to fetch supplier details.
+     *
+     * @author: Swasthik
+     *
+     * @created-on: 1 Jun, 2026
+     *
+     * @updated-on: N/A
      */
-    // public function index()
-    // {
-    //     try {
-    //         $suppliers = Supplier::orderBy('id', 'desc')->get();
-
-    //         return response()->json([
-    //             'status' => 'S',
-    //             'message' => trans('returnmessage.dataretreived'),
-    //             'suppliers' => $suppliers
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json([
-    //             'status' => 'E',
-    //             'message' => trans('returnmessage.error_processing'),
-    //             'error_data' => $e->getMessage()
-    //         ]);
-    //     }
-    // }
     public function index()
     {
         try {

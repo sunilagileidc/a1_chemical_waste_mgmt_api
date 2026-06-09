@@ -113,13 +113,15 @@ class SalesQuotationApiController extends Controller
                     'quote_size'         => $item['quote_size'] ?? null,
                     'quote_qty'          => $item['quote_qty'] ?? 0,
                     'quote_unit_price'   => $item['quote_unit_price'] ?? 0,
+                    'quote_vat_exclude'  => $item['quote_vat_exclude'] ?? 0,
+                    'vat'                => $item['vat'] ?? 0,
                     'quote_total_price'  => $itemTotal,
                     'active'             => 1,
                     'created_by'         => auth()->id(),
                     'updated_by'         => auth()->id(),
                 ]);
 
-                $total += $itemTotal;
+                $total += $itemTotal + ($item['vat'] ?? 0);
             }
 
             $quotation->update([

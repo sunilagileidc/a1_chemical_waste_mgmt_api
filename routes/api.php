@@ -4,27 +4,17 @@ use App\Http\Controllers\Api\V1\Admin\ActionMasterApiController;
 use App\Http\Controllers\Api\V1\Admin\ApprovalApiController;
 use App\Http\Controllers\Api\V1\Admin\AuditApiController;
 use App\Http\Controllers\Api\V1\Admin\ChangePasswordApiController;
-use App\Http\Controllers\Api\V1\Admin\ConnectedPharmacyApiController;
 use App\Http\Controllers\Api\V1\Admin\CountriesApiController;
 use App\Http\Controllers\Api\V1\Admin\CustomerApiController;
 use App\Http\Controllers\Api\V1\Admin\CustomerIndividualApiController;
 use App\Http\Controllers\Api\V1\Admin\DocumentApiController;
-use App\Http\Controllers\Api\V1\Admin\DrugsApiController;
 use App\Http\Controllers\Api\V1\Admin\FileUploadApiController;
 use App\Http\Controllers\Api\V1\Admin\HaulierApiController;
 use App\Http\Controllers\Api\V1\Admin\HaulierIndividualApiController;
 use App\Http\Controllers\Api\V1\Admin\IndicationsApiController;
-use App\Http\Controllers\Api\V1\Admin\InstitutionApiController;
 use App\Http\Controllers\Api\V1\Admin\LookupsApiController;
 use App\Http\Controllers\Api\V1\Admin\MarketingHoldersApiController;
 use App\Http\Controllers\Api\V1\Admin\MenuApiController;
-use App\Http\Controllers\Api\V1\Admin\NonConformaceRulesApiController;
-use App\Http\Controllers\Api\V1\Admin\PAFApiController;
-use App\Http\Controllers\Api\V1\Admin\PAFConfirmationTextApiController;
-use App\Http\Controllers\Api\V1\Admin\PAFDocumentApiController;
-use App\Http\Controllers\Api\V1\Admin\PharmacyApiController;
-use App\Http\Controllers\Api\V1\Admin\PolicyAssignQuestionsApiController;
-use App\Http\Controllers\Api\V1\Admin\PolicyQuestionsApiController;
 use App\Http\Controllers\Api\V1\Admin\QuotationPartnerApiController;
 use App\Http\Controllers\Api\V1\Admin\RolesApiController;
 use App\Http\Controllers\Api\V1\Admin\SalesQuotationApiController;
@@ -34,7 +24,6 @@ use App\Http\Controllers\Api\V1\Admin\SupplierSalesDataApiController;
 use App\Http\Controllers\Api\V1\Admin\SystemParameterApiController;
 use App\Http\Controllers\Api\V1\Admin\UserApiController;
 use App\Http\Controllers\Api\V1\Admin\WasteStreamApiController;
-use App\Http\Controllers\Api\V1\Admin\WolesalersApiController;
 use App\Http\Controllers\Api\V1\Auth\LoginApiController;
 use App\Http\Controllers\Api\V1\Auth\RecoverPasswordApiController;
 use App\Http\Controllers\Api\V1\Auth\UserRegistrationApiController;
@@ -56,23 +45,6 @@ Route::middleware('throttle:5,2')->post('registration_otp_validate', [UserRegist
 Route::middleware('throttle:5,2')->post('resetpassword', [RecoverPasswordApiController::class, 'validateOtp']);
 Route::middleware('throttle:5,2')->post('login_otp_validate', [RecoverPasswordApiController::class, 'loginOtpValidate']);
 Route::middleware('throttle:5,2')->post('send_login_otp', [LoginApiController::class, 'sendLoginOtp']);
-
-//routes without auth sanctum
-Route::get('/fetchactiveinstitutions', [InstitutionApiController::class, 'fetchActiveInstitutions']);
-Route::get('/fetchlookup', [LookupsApiController::class, 'fetchLookup']);
-Route::get('/fetch_institution_by_type', [InstitutionApiController::class, 'fetchInstitutionByType']);
-Route::get('/fetch_pharmacist_list_by_user/{id}', [InstitutionApiController::class, 'fetchPharmacistListByUser']);
-Route::get('/fetch_prescriber_list_by_user/{id}', [InstitutionApiController::class, 'fetchPrescriberListByUser']);
-Route::get('/fetch_active_drugs', [DrugsApiController::class, 'fetchActiveDrugs']);
-Route::get('/fetch_active_wholesalers', [WolesalersApiController::class, 'fetchActiveWholesalers']);
-Route::get('fetch_systemparameter_data', [SystemParameterApiController::class, 'getSystemParameter']);
-Route::get('/fetch_policy_questions', [PolicyQuestionsApiController::class, 'fetchRegPolicyQuestions']);
-Route::post('/check-email-exists', [UserRegistrationApiController::class, 'checkEmailExists']);
-Route::get('/fetch_all_drugs', [DrugsApiController::class, 'fetchAllDrugs']);
-Route::get('/fetch_wholesaler_drugs', [InstitutionApiController::class, 'fetchWholesalerDrugs']);
-Route::get('/fetch_institutions_by_user/{id}', [InstitutionApiController::class, 'fetchInstitutionsByUser']);
-Route::post('/save_wholesaler_accounts', [WolesalersApiController::class, 'saveWholesalerAccounts']);
-Route::get('/check-lead-pharmacist/{institution_id}', [DrugsApiController::class, 'checkLeadPharmacist']);
 
 Route::middleware('auth:api')->group(function () {
 Route::get('profile', [LoginApiController::class, 'profile']);
@@ -164,13 +136,6 @@ Route::post('/imageupload', [FileUploadApiController::class, 'imageUpload']);
 Route::post('/file_upload', [FileUploadApiController::class, 'fileUpload']);
 Route::post('/imageUrlBase64', [FileUploadApiController::class, 'imageUrlBase64']);
 
-// Institution Api Controller
-Route::resource('institution', InstitutionApiController::class);
-Route::post('/update_institution_status', [InstitutionApiController::class, 'updateInstitutionStatus']);
-Route::get('/fetchactivepharmacies', [InstitutionApiController::class, 'fetchActivePharmacies']);
-Route::get('/fetch_inst_contacts', [InstitutionApiController::class, 'fetchInstitutionContacts']);
-Route::get('/fetch_institutions_by_type', [InstitutionApiController::class, 'fetchInstitutionsByType']);
-
 // Document Controller
 Route::get('/fetch_documents', [DocumentApiController::class, 'index']);
 Route::get('/fetch_chid_documents/{slug}', [DocumentApiController::class, 'fetchChidDocuments']);
@@ -197,41 +162,6 @@ Route::get('/fetch_regdetails_by_slug/{slug}', [ApprovalApiController::class, 'f
 Route::post('/updateRegStatus', [ApprovalApiController::class, 'updateRegStatus']);
 Route::get('/fetch_pharmacist_list', [ApprovalApiController::class, 'fetchAllPharmacist']);
 
-// Drugs controller
-Route::get('/fetch_drugs', [DrugsApiController::class, 'index']);
-Route::post('/update_drug_status', [DrugsApiController::class, 'updateDrugStatus']);
-
-// Drug controller
-Route::get('/fetch_drug', [DrugsApiController::class, 'index']);
-Route::post('/create_drug', [DrugsApiController::class, 'store']);
-Route::get('/edit_drug/{slug}', [DrugsApiController::class, 'editDrug']);
-Route::delete('/drug/{id}', [DrugsApiController::class, 'deleteDrug']);
-Route::post('/update_drug', [DrugsApiController::class, 'updateDrugs']);
-Route::post('/force_to_re_register', [DrugsApiController::class, 'forceToReRegister']);
-Route::post('/force_to_re_register_selected_drug', [DrugsApiController::class, 'forceToReRegisterSelectedDrug']);
-Route::get('/get_reg_drug_status', [DrugsApiController::class, 'getRegisteredDrugStatus']);
-Route::get('/get_inst_drugs', [DrugsApiController::class, 'getInstitutionDrugs']);
-Route::get('/get_unregistred_drugs', [DrugsApiController::class, 'getUnregisteredDrugs']);
-Route::post('/force_to_re_register_drug_level', [DrugsApiController::class, 'forceToReRegisterDrugLevel']);
-
-// Wholesaler controller
-Route::get('/fetch_wholesalers', [WolesalersApiController::class, 'index']);
-Route::post('/create_wholesaler', [WolesalersApiController::class, 'store']);
-Route::get('/edit_wholesaler/{slug}', [WolesalersApiController::class, 'edit']);
-Route::patch('/update_wholesaler/{id}', [WolesalersApiController::class, 'update']);
-Route::post('/update_wholesaler_status', [WolesalersApiController::class, 'updateWholesalerStatus']);
-
-//policy questions
-Route::resource('/policy_questions', PolicyQuestionsApiController::class);
-Route::post('/update_policy_question_status', [PolicyQuestionsApiController::class, 'updatePolicyQuestionStatus']);
-
-//policy assign questions
-Route::resource('/assign_policy_questions', PolicyAssignQuestionsApiController::class);
-Route::post('/update_assign_policy_question_status', [PolicyAssignQuestionsApiController::class, 'updateAssignPolicyQuestionStatus']);
-// Parmacy Api Controller
-Route::resource('/pharmacy', PharmacyApiController::class);
-Route::post('/update_pharmacy_status', [PharmacyApiController::class, 'updatePharmacyStatus']);
-
 //Indications Api Controller
 Route::get('/fetch_all_indications', [IndicationsApiController::class, 'index']);
 Route::delete('/indication/{id}', [IndicationsApiController::class, 'destroy']);
@@ -251,68 +181,6 @@ Route::get('/fetch_marketing_holders_by_drug', [MarketingHoldersApiController::c
 
 Route::get('/fetch_all_audits', [AuditApiController::class, 'index']);
 
-Route::resource('/connected_pharmacy', ConnectedPharmacyApiController::class);
-Route::get('/connected_outpatient', [ConnectedPharmacyApiController::class, 'getConnectedOutpatient']);
-Route::get('/connected_homecare', [ConnectedPharmacyApiController::class, 'getConnectedHomecare']);
-Route::post('/update_connected_pharmacy', [ConnectedPharmacyApiController::class, 'updateConnPharmacyStatus']);
-
-// PAF apis
-
-Route::get('/fetch_prescriber_data', [PAFApiController::class, 'fetchPrescriberData']);
-Route::get('/get_prescriber_drugs', [PAFApiController::class, 'getPrescriberDrugs']);
-Route::get('/fetch_drug_details', [PAFApiController::class, 'fetchDrugDetails']);
-Route::post('/create_paf', [PAFApiController::class, 'createPaf']);
-Route::get('/get_prescriber_paf', [PAFApiController::class, 'getPrescriberPaf']);
-Route::get('/get_pharmacist_paf', [PAFApiController::class, 'getPharmacistPaf']);
-Route::get('/get_paf_stats', [PAFApiController::class, 'getPafStats']);
-Route::get('/get_pharmacist_paf_stats', [PAFApiController::class, 'getPharmacistPafStats']);
-Route::get('/paf_details', [PAFApiController::class, 'getPafDetails']);
-Route::post('/reject_paf', [PAFApiController::class, 'rejectPaf']);
-Route::get('/fetch_patient_initials', [PAFApiController::class, 'fetchPatientInitials']);
-Route::post('/paf_approve_and_dispense', [PAFApiController::class, 'pafApproveAndDispense']);
-Route::post('/paf_approve', [PAFApiController::class, 'pafApprove']);
-Route::get('/get_paf_history', [PAFApiController::class, 'fetchPafHistory']);
-Route::get('/get_paf_by_details_id', [PAFApiController::class, 'getPafByDetailsId']);
-Route::post('/paf_revert', [PAFApiController::class, 'pafRevert']);
-Route::get('/get_all_pafs', [PAFApiController::class, 'getAllPafs']);
-Route::get('/get_all_paf_stats', [PAFApiController::class, 'getAllPafStats']);
-Route::get('/get_all_paf_details', [PAFApiController::class, 'getAllPafDetails']);
-Route::post('/bulk_review_paf', [PAFApiController::class, 'bulkPAFReview']);
-Route::post('/validate_paf_conformance', [PAFApiController::class, 'validatePafConformance']);
-Route::post('/merge_paf', [PAFApiController::class, 'mergePaf']);
-Route::post('/check_existing_active_paf', [PAFApiController::class, 'checkExistingActivePaf']);
-Route::get('/get_off_lable_pafs', [PAFApiController::class, 'getOffLablePafs']);
-Route::post('/send_paf_request_info', [PAFApiController::class, 'sendPafRequestInfo']);
-Route::get('/get_all_paf_counts', [PAFApiController::class, 'getAllPafCounts']);
-Route::post('/paf_op_dispense', [PAFApiController::class, 'pafOPDispense']);
-Route::post('/mark_non_conformance', [PAFApiController::class, 'markNonConformance']);
-Route::get('/get_confirmation_text', [PAFApiController::class, 'getConfirmationText']);
-Route::post('/revalidate_non_conformance', [PAFApiController::class, 'revalidateNonConformance']);
-Route::post('/check_off_label_reasons', [PAFApiController::class, 'checkOffLabelReasons']);
-Route::get('/get_all_paf_report', [PAFApiController::class, 'getAllPafReport']);
-
-// Non conformace controller
-Route::get('/fetch_nonconfrules', [NonConformaceRulesApiController::class, 'index']);
-Route::post('/create_nonconfrules', [NonConformaceRulesApiController::class, 'store']);
-Route::get('/edit_non_conformance_rules/{slug}', [NonConformaceRulesApiController::class, 'editNonConformanceRules']);
-Route::post('/update_non_conformance_status', [NonConformaceRulesApiController::class, 'updateNonConformanceStatus']);
-
-// Confiramtion Text controller
-Route::get('/fetch_confirmation_texts', [PAFConfirmationTextApiController::class, 'index']);
-Route::get('/edit_confirmation_text/{id}', [PAFConfirmationTextApiController::class, 'editConfirmationText']);
-Route::post('/create_confirmation_text', [PAFConfirmationTextApiController::class, 'store']);
-Route::post('/update_confirmation_text_status', [PAFConfirmationTextApiController::class, 'updateConfirmationTextStatus']);
-Route::get('/fetch_confirmation_text_by_type', [PAFConfirmationTextApiController::class, 'fetchConfirmationTextByType']);
-
-// PAF Document Controller
-Route::get('/fetch_paf_documents', [PAFDocumentApiController::class, 'index']);
-Route::get('/paf_documents/{slug}', [PAFDocumentApiController::class, 'editDocument']);
-Route::post('/create_paf_document', [PAFDocumentApiController::class, 'store']);
-Route::patch('/paf_documents/{id}', [PAFDocumentApiController::class, 'update']);
-Route::delete('/paf_documents/{id}', [PAFDocumentApiController::class, 'delete']);
-
-Route::get('/fetch_chid_documents/{slug}', [PAFDocumentApiController::class, 'fetchChidDocuments']);
-Route::get('/fetch_documents/{search?}', [PAFDocumentApiController::class, 'fetchDocuments']);
 
 // Supplier Sales Data
 Route::get('/get_supplier_sales_data', [SupplierSalesDataApiController::class, 'index']);

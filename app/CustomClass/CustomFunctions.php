@@ -3,11 +3,8 @@ namespace App\CustomClass;
 
 use App\Models\Activitylog;
 use App\Models\Audit;
-use App\Models\Drugs;
 use App\Models\NonConformanceRules;
-use App\Models\PAFConfirmationText;
 use App\Models\PAFNonConformance;
-use App\Models\PAFOfflabelConfirmation;
 use App\Models\Role;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -161,42 +158,6 @@ class CustomFunctions
         }
     }
 
-/**
- * Get drug name by drug ID.
- * @author: Santhosha G
- *
- * @created-on: 04 Mar, 2026
- *
- * @updated-on: N/A
- * @param int $drugId
- * @return string
- */
-    public static function getDrugName($drugId)
-    {
-        try {
-
-            if (! $drugId) {
-                throw new \Exception('Invalid drug ID provided');
-            }
-
-            $drugName = Drugs::where('id', $drugId)->value('drug_name');
-
-            if (! $drugName) {
-                throw new \Exception('Drug not found');
-            }
-
-            return $drugName;
-
-        } catch (\Exception $e) {
-
-            \Log::error('Error fetching drug name', [
-                'drug_id' => $drugId,
-                'error'   => $e->getMessage(),
-            ]);
-
-            return null;
-        }
-    }
 
     /**
      * Create non conformance
@@ -456,72 +417,6 @@ class CustomFunctions
                 'old_paf_details_id' => $oldPafDetailsId,
                 'new_paf_details_id' => $newPafDetailsId,
                 'error'              => $e->getMessage(),
-            ]);
-        }
-    }
-
-    /**
-     * Store PAF confirmation types
-     *
-     * @param array $confirmationTypes
-     * @param int $pafDetailsId
-     * @param int $userId
-     * @return void
-     */
-    public static function storeOfflabelConfirmations(
-        $confirmationTypes,
-        $pafDetailsId,
-        $userId,
-        $drugName = null,
-        $indication = null
-    ) {
-        try {
-
-            if (empty($confirmationTypes) || ! is_array($confirmationTypes)) {
-                return;
-            }
-
-            foreach ($confirmationTypes as $type) {
-
-                // Skip empty values
-                if (empty($type)) {
-                    continue;
-                }
-
-                // Fetch confirmation text using type
-                $confirmationText = PAFConfirmationText::where('type', $type)
-                    ->value('note');
-
-                // Replace dynamic placeholders
-                if ($confirmationText) {
-
-                    $confirmationText = str_replace(
-                        ['${drugName}', '${indication}'],
-                        [
-                            $drugName ?? '',
-                            $indication ?? '',
-                        ],
-                        $confirmationText
-                    );
-                }
-
-                PAFOfflabelConfirmation::create([
-                    'paf_details_id' => $pafDetailsId,
-                    'type'           => $type,
-                    'confirmation'   => $confirmationText,
-                    'version'        => 1,
-                    'created_by'     => $userId,
-                    'updated_by'     => $userId,
-                ]);
-            }
-
-        } catch (\Exception $e) {
-
-            \Log::error('Failed to store offlabel confirmations', [
-                'paf_details_id'    => $pafDetailsId,
-                'confirmationTypes' => $confirmationTypes,
-                'user_id'           => $userId,
-                'error'             => $e->getMessage(),
             ]);
         }
     }
